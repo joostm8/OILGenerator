@@ -1,0 +1,91 @@
+/* Running the following example:
+                      * just call goil a first time using the command line:
+                      * goil --target=avr/arduino/mega --templates=../../../../goil/templates/ file_name_placeholder.oil
+                      * /
+
+OIL_VERSION = "2.5" : "test";
+
+CPU test {
+	OS OSConfig {
+	STATUS = STANDARD;
+	BUILD = TRUE {
+	TRAMPOLINE_BASE_PATH = ../../../..;
+	APP_NAME = first_autogen_woo;
+	APP_SRC = default.cpp;
+	CPPCOMPILER = "avr-g++";
+	COMPILER =  "avr-gcc";
+	LINKER = "avr-gcc";
+	ASSEMBLER = "avr-gcc";
+	COPIER = "avr-objcopy";
+	SYSTEM = PYTHON;
+
+	LIBRARY = matlab;
+	LIBRARY = spi;
+	};
+};
+
+APPMODE stdAppmode {DEFAULT = TRUE;};
+
+ALARM Periodic_Task_1_ActivationAlarm {
+	COUNTER = SystemCounter;
+	ACTION = ACTIVATETASK {
+		TASK = Periodic_Task_1_Activation;
+	};
+	AUTOSTART = FALSE;
+};
+
+ALARM Periodic_Task_Multiple_ActivationAlarm {
+	COUNTER = SystemCounter;
+	ACTION = ACTIVATETASK {
+		TASK = Periodic_Task_Multiple_Activation;
+	};
+	AUTOSTART = FALSE;
+};
+
+TASK Periodic_Task_1_Activation {
+	PRIORITY = 1;
+	AUTOSTART = FALSE;
+	ACTIVATION = 1;
+	SCHEDULE = FULL;
+	STACKSIZE = 512;
+};
+
+TASK Periodic_Task_Multiple_Activation {
+	PRIORITY = 1;
+	AUTOSTART = FALSE;
+	ACTIVATION = 2;
+	SCHEDULE = FULL;
+	STACKSIZE = 512;
+};
+
+TASK Triggered_Task_1_Activation {
+	PRIORITY = 1;
+	AUTOSTART = FALSE;
+	ACTIVATION = 1;
+	SCHEDULE = FULL;
+	STACKSIZE = 512;
+};
+
+TASK Triggered_Task_Multiple_Activation {
+	PRIORITY = 1;
+	AUTOSTART = FALSE;
+	ACTIVATION = 2;
+	SCHEDULE = FULL;
+	STACKSIZE = 512;
+};
+
+ISR Periodic_ISR{
+	CATEGORY = 2;
+	PRIORITY = 21;
+	STACKSIZE = 512;
+	SOURCE = DEFAULT;
+};
+
+ISR Triggered_ISR{
+	CATEGORY = 2;
+	PRIORITY = 22;
+	STACKSIZE = 512;
+	SOURCE = DEFAULT;
+};
+
+};
