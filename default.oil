@@ -1,7 +1,7 @@
 /* Running the following example:
-                      * just call goil a first time using the command line:
-                      * goil --target=avr/arduino/mega --templates=../../../../goil/templates/ file_name_placeholder.oil
-                      * /
+                              * just call goil a first time using the command line:
+                              * goil --target=avr/arduino/mega --templates=../../../../goil/templates/ file_name_placeholder.oil
+                              * /
 
 OIL_VERSION = "2.5" : "test";
 
