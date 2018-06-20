@@ -35,9 +35,9 @@ class Task:
 
     def c_representation(self):
         c_repr = ("TASK(" + self.name + "){\n" +
-                  "/* Insert Input mapping code here */\n" +
-                  "/* Step the code executed by this TASK here*/\n" +
-                  "/* Insert Output mapping here */\n" +
+                  "/* Insert Input mapping code here */\n\n" +
+                  "/* Step the code executed by this TASK here*/\n\n" +
+                  "/* Insert Output mapping here */\n\n" +
                   "}\n"
                   )
 
