@@ -16,7 +16,7 @@ class Task:
         if self.auto_start:
             oil_repr += ("\tAUTOSTART = TRUE {\n" +
                          "\t\tAPPMODE = stdAppmode;\n" +
-                         "\t};")
+                         "\t};\n")
         else:
             oil_repr += "\tAUTOSTART = FALSE;\n"
 
@@ -36,9 +36,9 @@ class Task:
     def c_representation(self):
         c_repr = ("TASK(" + self.name + "){\n" +
                   "/* Insert Input mapping code here */\n\n" +
-                  "/* Step the code executed by this TASK here*/\n\n" +
+                  "/* Step the code executed by this TASK here */\n\n" +
                   "/* Insert Output mapping here */\n\n" +
-                  "}\n"
+                  "}\n\n"
                   )
 
         return c_repr

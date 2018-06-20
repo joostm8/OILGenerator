@@ -24,9 +24,9 @@ class ISR:
     def c_representation(self):
         c_repr = ("ISR(" + self.name + "){\n" +
                   "/* Insert Input mapping code here */\n\n" +
-                  "/* Step the code executed by this ISR here*/\n\n" +
+                  "/* Step the code executed by this ISR here */\n\n" +
                   "/* Insert Output mapping here */\n\n" +
-                  "}\n"
+                  "}\n\n"
                   )
 
         return c_repr
