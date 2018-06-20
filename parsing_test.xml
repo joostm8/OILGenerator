@@ -7,7 +7,7 @@
       <P Name="NumRootInports">0</P>
       <P Name="NumRootOutports">0</P>
       <P Name="ParameterArgumentNames"/>
-      <P Name="ComputedModelVersion">1.5</P>
+      <P Name="ComputedModelVersion">1.7</P>
       <P Name="NumModelReferences">0</P>
       <P Name="NumTestPointedSignals">0</P>
       <P Name="NumProvidedFunctions">0</P>
@@ -59,7 +59,7 @@
           <P Name="LoadSaveID" Class="char">0</P>
           <P Name="Extents" Class="double">[1882.0, 875.0]</P>
           <P Name="ZoomFactor" Class="double">1.25</P>
-          <P Name="Offset" Class="double">[-359.03061802969927, 28.743118029699243]</P>
+          <P Name="Offset" Class="double">[-359.03061802969927, 28.743118029699247]</P>
         </Object>
         <Object PropName="DockComponentsInfo" ObjectID="6" ClassName="Simulink.DockComponentInfo">
           <P Name="Type" Class="char">GLUE2:PropertyInspector</P>
@@ -83,9 +83,9 @@
       <P Name="ModifiedByFormat">%&lt;Auto&gt;</P>
       <P Name="LastModifiedBy">Joost</P>
       <P Name="ModifiedDateFormat">%&lt;Auto&gt;</P>
-      <P Name="LastModifiedDate">Wed Jun 20 13:46:21 2018</P>
-      <P Name="RTWModifiedTimeStamp">451403513</P>
-      <P Name="ModelVersionFormat">1.%&lt;AutoIncrement:5&gt;</P>
+      <P Name="LastModifiedDate">Wed Jun 20 13:56:53 2018</P>
+      <P Name="RTWModifiedTimeStamp">451403813</P>
+      <P Name="ModelVersionFormat">1.%&lt;AutoIncrement:7&gt;</P>
     </ConfigManagerSettings>
     <EditorSettings>
       <P Name="SampleTimeColors">off</P>
@@ -1244,7 +1244,7 @@
       <P Name="ZoomFactor">125</P>
       <P Name="ReportName">simulink-default.rpt</P>
       <P Name="SIDHighWatermark">361</P>
-      <Block BlockType="SubSystem" Name="Alarm1" SID="181">
+      <Block BlockType="SubSystem" Name="Alarm_1" SID="181">
         <P Name="Ports">[0, 1]</P>
         <P Name="Position">[-45, 179, 95, 211]</P>
         <P Name="ZOrder">2158</P>
@@ -2399,13 +2399,210 @@ absolutely, since at system start the counter is 0</P>
           </Annotation>
         </System>
       </Block>
+      <Block BlockType="SubSystem" Name="External_CLK" SID="78">
+        <P Name="Ports">[1, 1]</P>
+        <P Name="Position">[245, 460, 470, 500]</P>
+        <P Name="ZOrder">2152</P>
+        <P Name="CopyFcn">set_param(gcbh,&apos;LinkStatus&apos;,&apos;none&apos;); </P>
+        <P Name="RequestExecContextInheritance">off</P>
+        <Object PropName="MaskObject" ObjectID="36" ClassName="Simulink.Mask">
+          <P Name="Type" Class="char">tmpl_Periodic_ISR</P>
+          <P Name="Description" Class="char">A periodic ISR.
+Notes:
+ISR Execution Time should contain at least 2 elements, of which the last element is the transition between tasks/ISRs. Set to 0 if unsure
+
+Parameter explanation can be found in the help (press help button).</P>
+          <P Name="Help" Class="char">ISR ID: the ISR ID, give each task/ISR a unique ID for proper task logging and task switching
+
+ISR Priority: the ISR Priority, higher number = higher priority. ISRs must have a higher priority than tasks. By default ISR priorities range from 11 to 20.
+
+Task Period: Periodicity of the task
+
+Task Execution Time: vector containing task execution times, must contain at least 2 elements. The last element is the transition between tasks. Set to 0 if unsure
+
+Task is preemptable: check if task is preemptable, uncheck if not.
+
+Generate Entity At OS Start: check if the ISR should be spawned at system startup.
+
+Requires Resource: vector that indicates if the ISR requires a resource for that segment or not.
+
+</P>
+          <P Name="Initialization" Class="char">assert(length(segmentTimes)&gt;1, [&apos;SegementTimes should contain at least 2 times.&apos;,...
+&apos;The last time is the time it takes to switch tasks.&apos;,...
+&apos;If Unsure, set this time to 0&apos;]);
+assert(priorityNr&gt;10, &apos;Priority of ISR must be larger than 20&apos;);
+if(generateAtStart == 1)
+    set_param([gcb &apos;/Entity Generator&apos;], &apos;GenerateEntityAtSimulationStart&apos;, 1);
+else
+    set_param([gcb &apos;/Entity Generator&apos;], &apos;GenerateEntityAtSimulationStart&apos;, 0);
+end</P>
+          <P Name="Display" Class="char">%Labeling inputs
+port_label(&apos;input&apos;, 1, &apos;terminating ISR&apos;);
+
+%Labeling outputs
+port_label(&apos;output&apos;, 1, &apos;ISR&apos;);
+
+%General label of block
+disp(&apos;Periodic ISR&apos;);</P>
+          <P Name="RunInitForIconRedraw" Class="char">off</P>
+          <Array PropName="Parameters" Type="Simulink.MaskParameter" Dimension="1*6">
+            <Object ObjectID="37">
+              <P Name="Type" Class="char">edit</P>
+              <P Name="Name" Class="char">ID</P>
+              <P Name="Prompt" Class="char">ISR ID</P>
+              <P Name="Value" Class="char">4</P>
+            </Object>
+            <Object ObjectID="38">
+              <P Name="Type" Class="char">edit</P>
+              <P Name="Name" Class="char">priorityNr</P>
+              <P Name="Prompt" Class="char">ISR Priority</P>
+              <P Name="Value" Class="char">21</P>
+            </Object>
+            <Object ObjectID="39">
+              <P Name="Type" Class="char">edit</P>
+              <P Name="Name" Class="char">period</P>
+              <P Name="Prompt" Class="char">ISR Period</P>
+              <P Name="Value" Class="char">1</P>
+            </Object>
+            <Object ObjectID="40">
+              <P Name="Type" Class="char">edit</P>
+              <P Name="Name" Class="char">segmentTimes</P>
+              <P Name="Prompt" Class="char">ISR Execution Time</P>
+              <P Name="Value" Class="char">[0.1 0.1]</P>
+            </Object>
+            <Object ObjectID="41">
+              <P Name="Type" Class="char">checkbox</P>
+              <P Name="Name" Class="char">generateAtStart</P>
+              <P Name="Prompt" Class="char">Generate Entity At OS Start</P>
+              <P Name="Value" Class="char">on</P>
+            </Object>
+            <Object ObjectID="42">
+              <P Name="Type" Class="char">edit</P>
+              <P Name="Name" Class="char">requiresResource</P>
+              <P Name="Prompt" Class="char">Requires Resource</P>
+              <P Name="Value" Class="char">[0]</P>
+            </Object>
+          </Array>
+          <Array PropName="DialogControls" Type="Simulink.dialog.Group" Dimension="1*2">
+            <Object ObjectID="43">
+              <P Name="Prompt" Class="char">%&lt;MaskType&gt;</P>
+              <Object PropName="DialogControls" ObjectID="44" ClassName="Simulink.dialog.Text">
+                <P Name="Prompt" Class="char">%&lt;MaskDescription&gt;</P>
+                <P Name="Name" Class="char">DescTextVar</P>
+              </Object>
+              <P Name="Name" Class="char">DescGroupVar</P>
+            </Object>
+            <Object ObjectID="45">
+              <P Name="Prompt" Class="char">Simulink:studio:ToolBarParametersMenu</P>
+              <Array PropName="DialogControls" Type="Simulink.dialog.parameter.Control" Dimension="1*6">
+                <Object ObjectID="46" ClassName="Simulink.dialog.parameter.Edit">
+                  <P Name="PromptLocation" Class="char">left</P>
+                  <P Name="Name" Class="char">ID</P>
+                </Object>
+                <Object ObjectID="47" ClassName="Simulink.dialog.parameter.Edit">
+                  <P Name="PromptLocation" Class="char">left</P>
+                  <P Name="Name" Class="char">priorityNr</P>
+                </Object>
+                <Object ObjectID="48" ClassName="Simulink.dialog.parameter.Edit">
+                  <P Name="PromptLocation" Class="char">left</P>
+                  <P Name="Name" Class="char">period</P>
+                </Object>
+                <Object ObjectID="49" ClassName="Simulink.dialog.parameter.Edit">
+                  <P Name="PromptLocation" Class="char">left</P>
+                  <P Name="Name" Class="char">segmentTimes</P>
+                </Object>
+                <Object ObjectID="50" ClassName="Simulink.dialog.parameter.CheckBox">
+                  <P Name="Name" Class="char">generateAtStart</P>
+                </Object>
+                <Object ObjectID="51" ClassName="Simulink.dialog.parameter.Edit">
+                  <P Name="PromptLocation" Class="char">left</P>
+                  <P Name="Name" Class="char">requiresResource</P>
+                </Object>
+              </Array>
+              <P Name="Name" Class="char">ParameterGroupVar</P>
+            </Object>
+          </Array>
+        </Object>
+        <System>
+          <P Name="Location">[-8, -8, 1928, 1048]</P>
+          <P Name="SetDomainSpec">off</P>
+          <P Name="DomainSpecType">Deduce</P>
+          <P Name="TiledPaperMargins">[0.500000, 0.500000, 0.500000, 0.500000]</P>
+          <P Name="ZoomFactor">200</P>
+          <Block BlockType="Inport" Name="In1" SID="84">
+            <P Name="Position">[-125, 198, -95, 212]</P>
+            <P Name="ZOrder">347</P>
+            <P Name="IconDisplay">Port number</P>
+          </Block>
+          <Block BlockType="EntityGenerator" Name="Entity Generator" SID="85">
+            <P Name="Ports">[0, 1]</P>
+            <P Name="Position">[-140, 108, -85, 142]</P>
+            <P Name="ZOrder">353</P>
+            <P Name="OutputPortMessageModes">m</P>
+            <P Name="InputPortMap"/>
+            <P Name="OutputPortMap">o3</P>
+            <P Name="Period">period</P>
+            <P Name="AttributeName">ID|state|activationTime|executionTime|preemptable|preemptableSwitch|priorityNr|prioritySwitch|remainingTime|maxActivation|requiresResource|segment|numSegments|completed|requiresEvent|eventCompareTime|wait|type</P>
+            <P Name="AttributeInitialValue">ID|1|0|[segmentTimes zeros(1, 20-length(segmentTimes))]|1|2|priorityNr|priorityNr-10|0|-1|[requiresResource zeros(1,20-length(requiresResource))]|1|length(segmentTimes)|2|[zeros(1, 20)]|0|2|2</P>
+            <P Name="EntityType">Structured</P>
+            <P Name="EntityTypeName">Entity</P>
+            <P Name="EntityPriority">priorityNr</P>
+          </Block>
+          <Block BlockType="EntityServer" Name="Entity Server" SID="86">
+            <P Name="Ports">[1, 1]</P>
+            <P Name="Position">[210, 104, 255, 146]</P>
+            <P Name="ZOrder">338</P>
+            <P Name="InputPortMessageModes">m</P>
+            <P Name="OutputPortMessageModes">m</P>
+            <P Name="InputPortMap">u2</P>
+            <P Name="OutputPortMap">o9</P>
+            <P Name="Capacity">1</P>
+            <P Name="ServiceTimeValue">0</P>
+            <P Name="EntryAction">entity.activationTime = getTime();</P>
+          </Block>
+          <Block BlockType="EntityTerminator" Name="Entity Terminator2" SID="87">
+            <P Name="Ports">[1]</P>
+            <P Name="Position">[350, 197, 365, 213]</P>
+            <P Name="ZOrder">361</P>
+            <P Name="InputPortMessageModes">m</P>
+            <P Name="InputPortMap">u0</P>
+            <P Name="OutputPortMap"/>
+          </Block>
+          <Block BlockType="Outport" Name="Out2" SID="88">
+            <P Name="Position">[340, 118, 370, 132]</P>
+            <P Name="ZOrder">348</P>
+            <P Name="IconDisplay">Port number</P>
+          </Block>
+          <Line>
+            <P Name="ZOrder">1</P>
+            <P Name="SrcBlock">In1</P>
+            <P Name="SrcPort">1</P>
+            <P Name="DstBlock">Entity Terminator2</P>
+            <P Name="DstPort">1</P>
+          </Line>
+          <Line>
+            <P Name="ZOrder">2</P>
+            <P Name="SrcBlock">Entity Server</P>
+            <P Name="SrcPort">1</P>
+            <P Name="DstBlock">Out2</P>
+            <P Name="DstPort">1</P>
+          </Line>
+          <Line>
+            <P Name="ZOrder">3</P>
+            <P Name="SrcBlock">Entity Generator</P>
+            <P Name="SrcPort">1</P>
+            <P Name="DstBlock">Entity Server</P>
+            <P Name="DstPort">1</P>
+          </Line>
+        </System>
+      </Block>
       <Block BlockType="SubSystem" Name="Null_ISR" SID="177">
         <P Name="Ports">[0, 1]</P>
         <P Name="Position">[245, 350, 370, 390]</P>
         <P Name="ZOrder">2157</P>
         <P Name="CopyFcn">set_param(gcbh,&apos;LinkStatus&apos;,&apos;none&apos;); </P>
         <P Name="RequestExecContextInheritance">off</P>
-        <Object PropName="MaskObject" ObjectID="36" ClassName="Simulink.Mask">
+        <Object PropName="MaskObject" ObjectID="52" ClassName="Simulink.Mask">
           <P Name="Type" Class="char">tmpl_Null_ISR</P>
           <P Name="Description" Class="char">Null_ISR block. This block should be connected to the &quot;Interrupts&quot; input of the Task Processor when no other interrupts are used. Can be considered as a &quot;ground&quot; block for the &quot;Interrupts&quot; intput on the task processor.</P>
           <P Name="Help" Class="char">Null_ISR block. This block should be connected to the &quot;Interrupts&quot; input of the Task Processor when no other interrupts are used. Can be considered as a &quot;ground&quot; block for the &quot;Interrupts&quot; intput on the task processor.</P>
@@ -2566,17 +2763,17 @@ disp(&apos;Triggered ISR&apos;);</P>
           </Line>
         </System>
       </Block>
-      <Block BlockType="SubSystem" Name="Periodic_ISR" SID="78">
-        <P Name="Ports">[1, 1]</P>
-        <P Name="Position">[245, 460, 470, 500]</P>
-        <P Name="ZOrder">2152</P>
+      <Block BlockType="SubSystem" Name="PIN_ISR" SID="81">
+        <P Name="Ports">[2, 1]</P>
+        <P Name="Position">[245, 520, 470, 560]</P>
+        <P Name="ZOrder">2153</P>
         <P Name="CopyFcn">set_param(gcbh,&apos;LinkStatus&apos;,&apos;none&apos;); </P>
         <P Name="RequestExecContextInheritance">off</P>
-        <Object PropName="MaskObject" ObjectID="37" ClassName="Simulink.Mask">
-          <P Name="Type" Class="char">tmpl_Periodic_ISR</P>
-          <P Name="Description" Class="char">A periodic ISR.
+        <Object PropName="MaskObject" ObjectID="53" ClassName="Simulink.Mask">
+          <P Name="Type" Class="char">tmpl_Triggered_ISR</P>
+          <P Name="Description" Class="char">A periodic task for which only one activation is permitted.
 Notes:
-ISR Execution Time should contain at least 2 elements, of which the last element is the transition between tasks/ISRs. Set to 0 if unsure
+ISR Execution Time should contain at least 2 elements, of which the last element is the transition between tasks.
 
 Parameter explanation can be found in the help (press help button).</P>
           <P Name="Help" Class="char">ISR ID: the ISR ID, give each task/ISR a unique ID for proper task logging and task switching
@@ -2589,61 +2786,43 @@ Task Execution Time: vector containing task execution times, must contain at lea
 
 Task is preemptable: check if task is preemptable, uncheck if not.
 
-Generate Entity At OS Start: check if the ISR should be spawned at system startup.
-
-Requires Resource: vector that indicates if the ISR requires a resource for that segment or not.
+Requires Resource: vector that indicates if the task requires a resource for that segment or not.
 
 </P>
           <P Name="Initialization" Class="char">assert(length(segmentTimes)&gt;1, [&apos;SegementTimes should contain at least 2 times.&apos;,...
 &apos;The last time is the time it takes to switch tasks.&apos;,...
 &apos;If Unsure, set this time to 0&apos;]);
-assert(priorityNr&gt;10, &apos;Priority of ISR must be larger than 20&apos;);
-if(generateAtStart == 1)
-    set_param([gcb &apos;/Entity Generator&apos;], &apos;GenerateEntityAtSimulationStart&apos;, 1);
-else
-    set_param([gcb &apos;/Entity Generator&apos;], &apos;GenerateEntityAtSimulationStart&apos;, 0);
-end</P>
+assert(priorityNr&gt;10, &apos;Priority of ISR must be larger than 20&apos;);</P>
           <P Name="Display" Class="char">%Labeling inputs
-port_label(&apos;input&apos;, 1, &apos;terminating ISR&apos;);
+port_label(&apos;input&apos;, 1, &apos;ISR Trigger&apos;);
+port_label(&apos;input&apos;, 2, &apos;terminating ISR&apos;);
 
 %Labeling outputs
 port_label(&apos;output&apos;, 1, &apos;ISR&apos;);
 
 %General label of block
-disp(&apos;Periodic ISR&apos;);</P>
+disp(&apos;Triggered ISR&apos;);</P>
           <P Name="RunInitForIconRedraw" Class="char">off</P>
-          <Array PropName="Parameters" Type="Simulink.MaskParameter" Dimension="1*6">
-            <Object ObjectID="38">
+          <Array PropName="Parameters" Type="Simulink.MaskParameter" Dimension="1*4">
+            <Object ObjectID="54">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">ID</P>
               <P Name="Prompt" Class="char">ISR ID</P>
-              <P Name="Value" Class="char">4</P>
+              <P Name="Value" Class="char">5</P>
             </Object>
-            <Object ObjectID="39">
+            <Object ObjectID="55">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">priorityNr</P>
               <P Name="Prompt" Class="char">ISR Priority</P>
-              <P Name="Value" Class="char">21</P>
+              <P Name="Value" Class="char">22</P>
             </Object>
-            <Object ObjectID="40">
-              <P Name="Type" Class="char">edit</P>
-              <P Name="Name" Class="char">period</P>
-              <P Name="Prompt" Class="char">ISR Period</P>
-              <P Name="Value" Class="char">1</P>
-            </Object>
-            <Object ObjectID="41">
+            <Object ObjectID="56">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">segmentTimes</P>
               <P Name="Prompt" Class="char">ISR Execution Time</P>
-              <P Name="Value" Class="char">[0.1 0.1]</P>
+              <P Name="Value" Class="char">[0.2 0.1]</P>
             </Object>
-            <Object ObjectID="42">
-              <P Name="Type" Class="char">checkbox</P>
-              <P Name="Name" Class="char">generateAtStart</P>
-              <P Name="Prompt" Class="char">Generate Entity At OS Start</P>
-              <P Name="Value" Class="char">on</P>
-            </Object>
-            <Object ObjectID="43">
+            <Object ObjectID="57">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">requiresResource</P>
               <P Name="Prompt" Class="char">Requires Resource</P>
@@ -2651,37 +2830,30 @@ disp(&apos;Periodic ISR&apos;);</P>
             </Object>
           </Array>
           <Array PropName="DialogControls" Type="Simulink.dialog.Group" Dimension="1*2">
-            <Object ObjectID="44">
+            <Object ObjectID="58">
               <P Name="Prompt" Class="char">%&lt;MaskType&gt;</P>
-              <Object PropName="DialogControls" ObjectID="45" ClassName="Simulink.dialog.Text">
+              <Object PropName="DialogControls" ObjectID="59" ClassName="Simulink.dialog.Text">
                 <P Name="Prompt" Class="char">%&lt;MaskDescription&gt;</P>
                 <P Name="Name" Class="char">DescTextVar</P>
               </Object>
               <P Name="Name" Class="char">DescGroupVar</P>
             </Object>
-            <Object ObjectID="46">
+            <Object ObjectID="60">
               <P Name="Prompt" Class="char">Simulink:studio:ToolBarParametersMenu</P>
-              <Array PropName="DialogControls" Type="Simulink.dialog.parameter.Control" Dimension="1*6">
-                <Object ObjectID="47" ClassName="Simulink.dialog.parameter.Edit">
+              <Array PropName="DialogControls" Type="Simulink.dialog.parameter.Edit" Dimension="1*4">
+                <Object ObjectID="61">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">ID</P>
                 </Object>
-                <Object ObjectID="48" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="62">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">priorityNr</P>
                 </Object>
-                <Object ObjectID="49" ClassName="Simulink.dialog.parameter.Edit">
-                  <P Name="PromptLocation" Class="char">left</P>
-                  <P Name="Name" Class="char">period</P>
-                </Object>
-                <Object ObjectID="50" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="63">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">segmentTimes</P>
                 </Object>
-                <Object ObjectID="51" ClassName="Simulink.dialog.parameter.CheckBox">
-                  <P Name="Name" Class="char">generateAtStart</P>
-                </Object>
-                <Object ObjectID="52" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="64">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">requiresResource</P>
                 </Object>
@@ -2696,26 +2868,35 @@ disp(&apos;Periodic ISR&apos;);</P>
           <P Name="DomainSpecType">Deduce</P>
           <P Name="TiledPaperMargins">[0.500000, 0.500000, 0.500000, 0.500000]</P>
           <P Name="ZoomFactor">200</P>
-          <Block BlockType="Inport" Name="In1" SID="84">
-            <P Name="Position">[-125, 198, -95, 212]</P>
-            <P Name="ZOrder">347</P>
+          <Block BlockType="Inport" Name="In1" SID="118">
+            <P Name="Position">[-125, 118, -95, 132]</P>
+            <P Name="ZOrder">363</P>
             <P Name="IconDisplay">Port number</P>
           </Block>
-          <Block BlockType="EntityGenerator" Name="Entity Generator" SID="85">
-            <P Name="Ports">[0, 1]</P>
-            <P Name="Position">[-140, 108, -85, 142]</P>
+          <Block BlockType="Inport" Name="In2" SID="119">
+            <P Name="Position">[-125, 198, -95, 212]</P>
+            <P Name="ZOrder">364</P>
+            <P Name="Port">2</P>
+            <P Name="IconDisplay">Port number</P>
+          </Block>
+          <Block BlockType="EntityGenerator" Name="Entity Generator" SID="120">
+            <P Name="Ports">[1, 1]</P>
+            <P Name="Position">[-15, 108, 40, 142]</P>
             <P Name="ZOrder">353</P>
+            <P Name="InputPortMessageModes">m</P>
             <P Name="OutputPortMessageModes">m</P>
-            <P Name="InputPortMap"/>
+            <P Name="InputPortMap">u0</P>
             <P Name="OutputPortMap">o3</P>
+            <P Name="GenerationMethod">Event-based</P>
             <P Name="Period">period</P>
+            <P Name="GenerateEntityAtSimulationStart">off</P>
             <P Name="AttributeName">ID|state|activationTime|executionTime|preemptable|preemptableSwitch|priorityNr|prioritySwitch|remainingTime|maxActivation|requiresResource|segment|numSegments|completed|requiresEvent|eventCompareTime|wait|type</P>
             <P Name="AttributeInitialValue">ID|1|0|[segmentTimes zeros(1, 20-length(segmentTimes))]|1|2|priorityNr|priorityNr-10|0|-1|[requiresResource zeros(1,20-length(requiresResource))]|1|length(segmentTimes)|2|[zeros(1, 20)]|0|2|2</P>
             <P Name="EntityType">Structured</P>
             <P Name="EntityTypeName">Entity</P>
             <P Name="EntityPriority">priorityNr</P>
           </Block>
-          <Block BlockType="EntityServer" Name="Entity Server" SID="86">
+          <Block BlockType="EntityServer" Name="Entity Server" SID="121">
             <P Name="Ports">[1, 1]</P>
             <P Name="Position">[210, 104, 255, 146]</P>
             <P Name="ZOrder">338</P>
@@ -2727,7 +2908,7 @@ disp(&apos;Periodic ISR&apos;);</P>
             <P Name="ServiceTimeValue">0</P>
             <P Name="EntryAction">entity.activationTime = getTime();</P>
           </Block>
-          <Block BlockType="EntityTerminator" Name="Entity Terminator2" SID="87">
+          <Block BlockType="EntityTerminator" Name="Entity Terminator2" SID="122">
             <P Name="Ports">[1]</P>
             <P Name="Position">[350, 197, 365, 213]</P>
             <P Name="ZOrder">361</P>
@@ -2735,7 +2916,7 @@ disp(&apos;Periodic ISR&apos;);</P>
             <P Name="InputPortMap">u0</P>
             <P Name="OutputPortMap"/>
           </Block>
-          <Block BlockType="Outport" Name="Out2" SID="88">
+          <Block BlockType="Outport" Name="Out2" SID="123">
             <P Name="Position">[340, 118, 370, 132]</P>
             <P Name="ZOrder">348</P>
             <P Name="IconDisplay">Port number</P>
@@ -2744,18 +2925,25 @@ disp(&apos;Periodic ISR&apos;);</P>
             <P Name="ZOrder">1</P>
             <P Name="SrcBlock">In1</P>
             <P Name="SrcPort">1</P>
-            <P Name="DstBlock">Entity Terminator2</P>
+            <P Name="DstBlock">Entity Generator</P>
             <P Name="DstPort">1</P>
           </Line>
           <Line>
             <P Name="ZOrder">2</P>
+            <P Name="SrcBlock">In2</P>
+            <P Name="SrcPort">1</P>
+            <P Name="DstBlock">Entity Terminator2</P>
+            <P Name="DstPort">1</P>
+          </Line>
+          <Line>
+            <P Name="ZOrder">3</P>
             <P Name="SrcBlock">Entity Server</P>
             <P Name="SrcPort">1</P>
             <P Name="DstBlock">Out2</P>
             <P Name="DstPort">1</P>
           </Line>
           <Line>
-            <P Name="ZOrder">3</P>
+            <P Name="ZOrder">4</P>
             <P Name="SrcBlock">Entity Generator</P>
             <P Name="SrcPort">1</P>
             <P Name="DstBlock">Entity Server</P>
@@ -2763,13 +2951,13 @@ disp(&apos;Periodic ISR&apos;);</P>
           </Line>
         </System>
       </Block>
-      <Block BlockType="SubSystem" Name="Periodic_Task_1_Activation" SID="79">
+      <Block BlockType="SubSystem" Name="TaskA" SID="79">
         <P Name="Ports">[1, 1]</P>
         <P Name="Position">[240, 60, 465, 100]</P>
         <P Name="ZOrder">2150</P>
         <P Name="CopyFcn">set_param(gcbh,&apos;LinkStatus&apos;,&apos;none&apos;); </P>
         <P Name="RequestExecContextInheritance">off</P>
-        <Object PropName="MaskObject" ObjectID="53" ClassName="Simulink.Mask">
+        <Object PropName="MaskObject" ObjectID="65" ClassName="Simulink.Mask">
           <P Name="Type" Class="char">tmpl_Periodic_Task_1_Activation</P>
           <P Name="Description" Class="char">A periodic task for which only one activation is permitted.
 Notes:
@@ -2818,56 +3006,56 @@ port_label(&apos;output&apos;, 1, &apos;readyTask&apos;);
 disp(&apos;Periodic Task&apos;);</P>
           <P Name="RunInitForIconRedraw" Class="char">off</P>
           <Array PropName="Parameters" Type="Simulink.MaskParameter" Dimension="1*9">
-            <Object ObjectID="54">
+            <Object ObjectID="66">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">ID</P>
               <P Name="Prompt" Class="char">Task ID</P>
               <P Name="Value" Class="char">1</P>
             </Object>
-            <Object ObjectID="55">
+            <Object ObjectID="67">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">priorityNr</P>
               <P Name="Prompt" Class="char">Task Priority</P>
               <P Name="Value" Class="char">1</P>
             </Object>
-            <Object ObjectID="56">
+            <Object ObjectID="68">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">period</P>
               <P Name="Prompt" Class="char">Task Period</P>
               <P Name="Value" Class="char">0.1</P>
             </Object>
-            <Object ObjectID="57">
+            <Object ObjectID="69">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">maxActivation</P>
               <P Name="Prompt" Class="char">Maximum Activation Count</P>
               <P Name="Value" Class="char">1</P>
               <P Name="Enabled" Class="char">off</P>
             </Object>
-            <Object ObjectID="58">
+            <Object ObjectID="70">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">segmentTimes</P>
               <P Name="Prompt" Class="char">Task Execution Time</P>
               <P Name="Value" Class="char">[0 0]</P>
             </Object>
-            <Object ObjectID="59">
+            <Object ObjectID="71">
               <P Name="Type" Class="char">checkbox</P>
               <P Name="Name" Class="char">generateAtStart</P>
               <P Name="Prompt" Class="char">Generate Entity At OS Start</P>
               <P Name="Value" Class="char">off</P>
             </Object>
-            <Object ObjectID="60">
+            <Object ObjectID="72">
               <P Name="Type" Class="char">checkbox</P>
               <P Name="Name" Class="char">preemptable</P>
               <P Name="Prompt" Class="char">Task is preemtable</P>
               <P Name="Value" Class="char">on</P>
             </Object>
-            <Object ObjectID="61">
+            <Object ObjectID="73">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">requiresResource</P>
               <P Name="Prompt" Class="char">Requires Resource</P>
               <P Name="Value" Class="char">[0]</P>
             </Object>
-            <Object ObjectID="62">
+            <Object ObjectID="74">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">requiresEvent</P>
               <P Name="Prompt" Class="char">Requires Event</P>
@@ -2875,48 +3063,48 @@ disp(&apos;Periodic Task&apos;);</P>
             </Object>
           </Array>
           <Array PropName="DialogControls" Type="Simulink.dialog.Group" Dimension="1*2">
-            <Object ObjectID="63">
+            <Object ObjectID="75">
               <P Name="Prompt" Class="char">%&lt;MaskType&gt;</P>
-              <Object PropName="DialogControls" ObjectID="64" ClassName="Simulink.dialog.Text">
+              <Object PropName="DialogControls" ObjectID="76" ClassName="Simulink.dialog.Text">
                 <P Name="Prompt" Class="char">%&lt;MaskDescription&gt;</P>
                 <P Name="Name" Class="char">DescTextVar</P>
               </Object>
               <P Name="Name" Class="char">DescGroupVar</P>
             </Object>
-            <Object ObjectID="65">
+            <Object ObjectID="77">
               <P Name="Prompt" Class="char">Simulink:studio:ToolBarParametersMenu</P>
               <Array PropName="DialogControls" Type="Simulink.dialog.parameter.Control" Dimension="1*9">
-                <Object ObjectID="66" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="78" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">ID</P>
                 </Object>
-                <Object ObjectID="67" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="79" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">priorityNr</P>
                 </Object>
-                <Object ObjectID="68" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="80" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">period</P>
                 </Object>
-                <Object ObjectID="69" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="81" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">maxActivation</P>
                 </Object>
-                <Object ObjectID="70" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="82" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">segmentTimes</P>
                 </Object>
-                <Object ObjectID="71" ClassName="Simulink.dialog.parameter.CheckBox">
+                <Object ObjectID="83" ClassName="Simulink.dialog.parameter.CheckBox">
                   <P Name="Name" Class="char">generateAtStart</P>
                 </Object>
-                <Object ObjectID="72" ClassName="Simulink.dialog.parameter.CheckBox">
+                <Object ObjectID="84" ClassName="Simulink.dialog.parameter.CheckBox">
                   <P Name="Name" Class="char">preemptable</P>
                 </Object>
-                <Object ObjectID="73" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="85" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">requiresResource</P>
                 </Object>
-                <Object ObjectID="74" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="86" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">requiresEvent</P>
                 </Object>
@@ -3140,13 +3328,13 @@ Output Switch</P>
           </Line>
         </System>
       </Block>
-      <Block BlockType="SubSystem" Name="Periodic_Task_Multiple_Activation" SID="80">
+      <Block BlockType="SubSystem" Name="TaskB" SID="80">
         <P Name="Ports">[1, 1]</P>
         <P Name="Position">[240, 120, 465, 160]</P>
         <P Name="ZOrder">2151</P>
         <P Name="CopyFcn">set_param(gcbh,&apos;LinkStatus&apos;,&apos;none&apos;); </P>
         <P Name="RequestExecContextInheritance">off</P>
-        <Object PropName="MaskObject" ObjectID="75" ClassName="Simulink.Mask">
+        <Object PropName="MaskObject" ObjectID="87" ClassName="Simulink.Mask">
           <P Name="Type" Class="char">tmpl_Periodic_Task_Multiple_Activation</P>
           <P Name="Description" Class="char">A periodic task for which multiple activation can be queued.
 Notes:
@@ -3192,55 +3380,55 @@ port_label(&apos;output&apos;, 1, &apos;readyTask&apos;);
 disp(&apos;Periodic Task&apos;);</P>
           <P Name="RunInitForIconRedraw" Class="char">off</P>
           <Array PropName="Parameters" Type="Simulink.MaskParameter" Dimension="1*9">
-            <Object ObjectID="76">
+            <Object ObjectID="88">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">ID</P>
               <P Name="Prompt" Class="char">Task ID</P>
-              <P Name="Value" Class="char">1</P>
+              <P Name="Value" Class="char">2</P>
             </Object>
-            <Object ObjectID="77">
+            <Object ObjectID="89">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">priorityNr</P>
               <P Name="Prompt" Class="char">Task Priority</P>
               <P Name="Value" Class="char">1</P>
             </Object>
-            <Object ObjectID="78">
+            <Object ObjectID="90">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">period</P>
               <P Name="Prompt" Class="char">Task Period</P>
               <P Name="Value" Class="char">0.1</P>
             </Object>
-            <Object ObjectID="79">
+            <Object ObjectID="91">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">maxActivation</P>
               <P Name="Prompt" Class="char">Maximum Activation Count</P>
               <P Name="Value" Class="char">2</P>
             </Object>
-            <Object ObjectID="80">
+            <Object ObjectID="92">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">segmentTimes</P>
               <P Name="Prompt" Class="char">Task Execution Time</P>
               <P Name="Value" Class="char">[0 0]</P>
             </Object>
-            <Object ObjectID="81">
+            <Object ObjectID="93">
               <P Name="Type" Class="char">checkbox</P>
               <P Name="Name" Class="char">generateAtStart</P>
               <P Name="Prompt" Class="char">Generate Entity At OS Start</P>
               <P Name="Value" Class="char">off</P>
             </Object>
-            <Object ObjectID="82">
+            <Object ObjectID="94">
               <P Name="Type" Class="char">checkbox</P>
               <P Name="Name" Class="char">preemptable</P>
               <P Name="Prompt" Class="char">Task is preemtable</P>
               <P Name="Value" Class="char">on</P>
             </Object>
-            <Object ObjectID="83">
+            <Object ObjectID="95">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">requiresResource</P>
               <P Name="Prompt" Class="char">Requires Resource</P>
               <P Name="Value" Class="char">[0]</P>
             </Object>
-            <Object ObjectID="84">
+            <Object ObjectID="96">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">requiresEvent</P>
               <P Name="Prompt" Class="char">Requires Event</P>
@@ -3248,48 +3436,48 @@ disp(&apos;Periodic Task&apos;);</P>
             </Object>
           </Array>
           <Array PropName="DialogControls" Type="Simulink.dialog.Group" Dimension="1*2">
-            <Object ObjectID="85">
+            <Object ObjectID="97">
               <P Name="Prompt" Class="char">%&lt;MaskType&gt;</P>
-              <Object PropName="DialogControls" ObjectID="86" ClassName="Simulink.dialog.Text">
+              <Object PropName="DialogControls" ObjectID="98" ClassName="Simulink.dialog.Text">
                 <P Name="Prompt" Class="char">%&lt;MaskDescription&gt;</P>
                 <P Name="Name" Class="char">DescTextVar</P>
               </Object>
               <P Name="Name" Class="char">DescGroupVar</P>
             </Object>
-            <Object ObjectID="87">
+            <Object ObjectID="99">
               <P Name="Prompt" Class="char">Simulink:studio:ToolBarParametersMenu</P>
               <Array PropName="DialogControls" Type="Simulink.dialog.parameter.Control" Dimension="1*9">
-                <Object ObjectID="88" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="100" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">ID</P>
                 </Object>
-                <Object ObjectID="89" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="101" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">priorityNr</P>
                 </Object>
-                <Object ObjectID="90" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="102" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">period</P>
                 </Object>
-                <Object ObjectID="91" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="103" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">maxActivation</P>
                 </Object>
-                <Object ObjectID="92" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="104" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">segmentTimes</P>
                 </Object>
-                <Object ObjectID="93" ClassName="Simulink.dialog.parameter.CheckBox">
+                <Object ObjectID="105" ClassName="Simulink.dialog.parameter.CheckBox">
                   <P Name="Name" Class="char">generateAtStart</P>
                 </Object>
-                <Object ObjectID="94" ClassName="Simulink.dialog.parameter.CheckBox">
+                <Object ObjectID="106" ClassName="Simulink.dialog.parameter.CheckBox">
                   <P Name="Name" Class="char">preemptable</P>
                 </Object>
-                <Object ObjectID="95" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="107" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">requiresResource</P>
                 </Object>
-                <Object ObjectID="96" ClassName="Simulink.dialog.parameter.Edit">
+                <Object ObjectID="108" ClassName="Simulink.dialog.parameter.Edit">
                   <P Name="PromptLocation" Class="char">left</P>
                   <P Name="Name" Class="char">requiresEvent</P>
                 </Object>
@@ -3530,195 +3718,7 @@ Output Switch</P>
           </Line>
         </System>
       </Block>
-      <Block BlockType="SubSystem" Name="Triggered_ISR" SID="81">
-        <P Name="Ports">[2, 1]</P>
-        <P Name="Position">[245, 520, 470, 560]</P>
-        <P Name="ZOrder">2153</P>
-        <P Name="CopyFcn">set_param(gcbh,&apos;LinkStatus&apos;,&apos;none&apos;); </P>
-        <P Name="RequestExecContextInheritance">off</P>
-        <Object PropName="MaskObject" ObjectID="97" ClassName="Simulink.Mask">
-          <P Name="Type" Class="char">tmpl_Triggered_ISR</P>
-          <P Name="Description" Class="char">A periodic task for which only one activation is permitted.
-Notes:
-ISR Execution Time should contain at least 2 elements, of which the last element is the transition between tasks.
-
-Parameter explanation can be found in the help (press help button).</P>
-          <P Name="Help" Class="char">ISR ID: the ISR ID, give each task/ISR a unique ID for proper task logging and task switching
-
-ISR Priority: the ISR Priority, higher number = higher priority. ISRs must have a higher priority than tasks. By default ISR priorities range from 11 to 20.
-
-Task Period: Periodicity of the task
-
-Task Execution Time: vector containing task execution times, must contain at least 2 elements. The last element is the transition between tasks. Set to 0 if unsure
-
-Task is preemptable: check if task is preemptable, uncheck if not.
-
-Requires Resource: vector that indicates if the task requires a resource for that segment or not.
-
-</P>
-          <P Name="Initialization" Class="char">assert(length(segmentTimes)&gt;1, [&apos;SegementTimes should contain at least 2 times.&apos;,...
-&apos;The last time is the time it takes to switch tasks.&apos;,...
-&apos;If Unsure, set this time to 0&apos;]);
-assert(priorityNr&gt;10, &apos;Priority of ISR must be larger than 20&apos;);</P>
-          <P Name="Display" Class="char">%Labeling inputs
-port_label(&apos;input&apos;, 1, &apos;ISR Trigger&apos;);
-port_label(&apos;input&apos;, 2, &apos;terminating ISR&apos;);
-
-%Labeling outputs
-port_label(&apos;output&apos;, 1, &apos;ISR&apos;);
-
-%General label of block
-disp(&apos;Triggered ISR&apos;);</P>
-          <P Name="RunInitForIconRedraw" Class="char">off</P>
-          <Array PropName="Parameters" Type="Simulink.MaskParameter" Dimension="1*4">
-            <Object ObjectID="98">
-              <P Name="Type" Class="char">edit</P>
-              <P Name="Name" Class="char">ID</P>
-              <P Name="Prompt" Class="char">ISR ID</P>
-              <P Name="Value" Class="char">5</P>
-            </Object>
-            <Object ObjectID="99">
-              <P Name="Type" Class="char">edit</P>
-              <P Name="Name" Class="char">priorityNr</P>
-              <P Name="Prompt" Class="char">ISR Priority</P>
-              <P Name="Value" Class="char">22</P>
-            </Object>
-            <Object ObjectID="100">
-              <P Name="Type" Class="char">edit</P>
-              <P Name="Name" Class="char">segmentTimes</P>
-              <P Name="Prompt" Class="char">ISR Execution Time</P>
-              <P Name="Value" Class="char">[0.2 0.1]</P>
-            </Object>
-            <Object ObjectID="101">
-              <P Name="Type" Class="char">edit</P>
-              <P Name="Name" Class="char">requiresResource</P>
-              <P Name="Prompt" Class="char">Requires Resource</P>
-              <P Name="Value" Class="char">[0]</P>
-            </Object>
-          </Array>
-          <Array PropName="DialogControls" Type="Simulink.dialog.Group" Dimension="1*2">
-            <Object ObjectID="102">
-              <P Name="Prompt" Class="char">%&lt;MaskType&gt;</P>
-              <Object PropName="DialogControls" ObjectID="103" ClassName="Simulink.dialog.Text">
-                <P Name="Prompt" Class="char">%&lt;MaskDescription&gt;</P>
-                <P Name="Name" Class="char">DescTextVar</P>
-              </Object>
-              <P Name="Name" Class="char">DescGroupVar</P>
-            </Object>
-            <Object ObjectID="104">
-              <P Name="Prompt" Class="char">Simulink:studio:ToolBarParametersMenu</P>
-              <Array PropName="DialogControls" Type="Simulink.dialog.parameter.Edit" Dimension="1*4">
-                <Object ObjectID="105">
-                  <P Name="PromptLocation" Class="char">left</P>
-                  <P Name="Name" Class="char">ID</P>
-                </Object>
-                <Object ObjectID="106">
-                  <P Name="PromptLocation" Class="char">left</P>
-                  <P Name="Name" Class="char">priorityNr</P>
-                </Object>
-                <Object ObjectID="107">
-                  <P Name="PromptLocation" Class="char">left</P>
-                  <P Name="Name" Class="char">segmentTimes</P>
-                </Object>
-                <Object ObjectID="108">
-                  <P Name="PromptLocation" Class="char">left</P>
-                  <P Name="Name" Class="char">requiresResource</P>
-                </Object>
-              </Array>
-              <P Name="Name" Class="char">ParameterGroupVar</P>
-            </Object>
-          </Array>
-        </Object>
-        <System>
-          <P Name="Location">[-8, -8, 1928, 1048]</P>
-          <P Name="SetDomainSpec">off</P>
-          <P Name="DomainSpecType">Deduce</P>
-          <P Name="TiledPaperMargins">[0.500000, 0.500000, 0.500000, 0.500000]</P>
-          <P Name="ZoomFactor">200</P>
-          <Block BlockType="Inport" Name="In1" SID="118">
-            <P Name="Position">[-125, 118, -95, 132]</P>
-            <P Name="ZOrder">363</P>
-            <P Name="IconDisplay">Port number</P>
-          </Block>
-          <Block BlockType="Inport" Name="In2" SID="119">
-            <P Name="Position">[-125, 198, -95, 212]</P>
-            <P Name="ZOrder">364</P>
-            <P Name="Port">2</P>
-            <P Name="IconDisplay">Port number</P>
-          </Block>
-          <Block BlockType="EntityGenerator" Name="Entity Generator" SID="120">
-            <P Name="Ports">[1, 1]</P>
-            <P Name="Position">[-15, 108, 40, 142]</P>
-            <P Name="ZOrder">353</P>
-            <P Name="InputPortMessageModes">m</P>
-            <P Name="OutputPortMessageModes">m</P>
-            <P Name="InputPortMap">u0</P>
-            <P Name="OutputPortMap">o3</P>
-            <P Name="GenerationMethod">Event-based</P>
-            <P Name="Period">period</P>
-            <P Name="GenerateEntityAtSimulationStart">off</P>
-            <P Name="AttributeName">ID|state|activationTime|executionTime|preemptable|preemptableSwitch|priorityNr|prioritySwitch|remainingTime|maxActivation|requiresResource|segment|numSegments|completed|requiresEvent|eventCompareTime|wait|type</P>
-            <P Name="AttributeInitialValue">ID|1|0|[segmentTimes zeros(1, 20-length(segmentTimes))]|1|2|priorityNr|priorityNr-10|0|-1|[requiresResource zeros(1,20-length(requiresResource))]|1|length(segmentTimes)|2|[zeros(1, 20)]|0|2|2</P>
-            <P Name="EntityType">Structured</P>
-            <P Name="EntityTypeName">Entity</P>
-            <P Name="EntityPriority">priorityNr</P>
-          </Block>
-          <Block BlockType="EntityServer" Name="Entity Server" SID="121">
-            <P Name="Ports">[1, 1]</P>
-            <P Name="Position">[210, 104, 255, 146]</P>
-            <P Name="ZOrder">338</P>
-            <P Name="InputPortMessageModes">m</P>
-            <P Name="OutputPortMessageModes">m</P>
-            <P Name="InputPortMap">u2</P>
-            <P Name="OutputPortMap">o9</P>
-            <P Name="Capacity">1</P>
-            <P Name="ServiceTimeValue">0</P>
-            <P Name="EntryAction">entity.activationTime = getTime();</P>
-          </Block>
-          <Block BlockType="EntityTerminator" Name="Entity Terminator2" SID="122">
-            <P Name="Ports">[1]</P>
-            <P Name="Position">[350, 197, 365, 213]</P>
-            <P Name="ZOrder">361</P>
-            <P Name="InputPortMessageModes">m</P>
-            <P Name="InputPortMap">u0</P>
-            <P Name="OutputPortMap"/>
-          </Block>
-          <Block BlockType="Outport" Name="Out2" SID="123">
-            <P Name="Position">[340, 118, 370, 132]</P>
-            <P Name="ZOrder">348</P>
-            <P Name="IconDisplay">Port number</P>
-          </Block>
-          <Line>
-            <P Name="ZOrder">1</P>
-            <P Name="SrcBlock">In1</P>
-            <P Name="SrcPort">1</P>
-            <P Name="DstBlock">Entity Generator</P>
-            <P Name="DstPort">1</P>
-          </Line>
-          <Line>
-            <P Name="ZOrder">2</P>
-            <P Name="SrcBlock">In2</P>
-            <P Name="SrcPort">1</P>
-            <P Name="DstBlock">Entity Terminator2</P>
-            <P Name="DstPort">1</P>
-          </Line>
-          <Line>
-            <P Name="ZOrder">3</P>
-            <P Name="SrcBlock">Entity Server</P>
-            <P Name="SrcPort">1</P>
-            <P Name="DstBlock">Out2</P>
-            <P Name="DstPort">1</P>
-          </Line>
-          <Line>
-            <P Name="ZOrder">4</P>
-            <P Name="SrcBlock">Entity Generator</P>
-            <P Name="SrcPort">1</P>
-            <P Name="DstBlock">Entity Server</P>
-            <P Name="DstPort">1</P>
-          </Line>
-        </System>
-      </Block>
-      <Block BlockType="SubSystem" Name="Triggered_Task_1_Activation" SID="82">
+      <Block BlockType="SubSystem" Name="TaskC_Trig" SID="82">
         <P Name="Ports">[2, 1]</P>
         <P Name="Position">[240, 186, 465, 224]</P>
         <P Name="ZOrder">2154</P>
@@ -4207,7 +4207,7 @@ and spawns an entity</P>
           </Annotation>
         </System>
       </Block>
-      <Block BlockType="SubSystem" Name="Triggered_Task_Multiple_Activation" SID="83">
+      <Block BlockType="SubSystem" Name="TaskD_Trig" SID="83">
         <P Name="Ports">[2, 1]</P>
         <P Name="Position">[240, 251, 465, 289]</P>
         <P Name="ZOrder">2155</P>
@@ -4715,29 +4715,30 @@ and spawns an entity</P>
       </Block>
       <Line>
         <P Name="ZOrder">1</P>
-        <P Name="SrcBlock">Alarm1</P>
+        <P Name="SrcBlock">Alarm_1</P>
         <P Name="SrcPort">1</P>
-        <P Name="DstBlock">Triggered_Task_1_Activation</P>
+        <P Name="DstBlock">TaskC_Trig</P>
         <P Name="DstPort">1</P>
       </Line>
       <Line>
         <P Name="ZOrder">6</P>
         <P Name="SrcBlock">PC1</P>
         <P Name="SrcPort">1</P>
-        <P Name="DstBlock">Triggered_ISR</P>
+        <P Name="DstBlock">PIN_ISR</P>
         <P Name="DstPort">1</P>
       </Line>
       <Line>
         <P Name="ZOrder">8</P>
         <P Name="SrcBlock">PC2</P>
         <P Name="SrcPort">1</P>
-        <P Name="DstBlock">Triggered_Task_Multiple_Activation</P>
+        <P Name="DstBlock">TaskD_Trig</P>
         <P Name="DstPort">1</P>
       </Line>
       <Annotation SID="276">
         <P Name="Name">export to xml: save_system(&apos;model.mdl&apos;, &apos;model_xml.xml&apos;,&apos;ExportToXML&apos;, true);</P>
         <P Name="Position">[490, 350, 837, 364]</P>
         <P Name="InternalMargins">[0, 0, 0, 0]</P>
+        <P Name="ZOrder">-1</P>
       </Annotation>
     </System>
   </Model>

@@ -26,23 +26,23 @@ CPU test {
 
 APPMODE stdAppmode {DEFAULT = TRUE;};
 
-ALARM Periodic_Task_1_ActivationAlarm {
+ALARM TaskAAlarm {
 	COUNTER = SystemCounter;
 	ACTION = ACTIVATETASK {
-		TASK = Periodic_Task_1_Activation;
+		TASK = TaskA;
 	};
 	AUTOSTART = FALSE;
 };
 
-ALARM Periodic_Task_Multiple_ActivationAlarm {
+ALARM TaskBAlarm {
 	COUNTER = SystemCounter;
 	ACTION = ACTIVATETASK {
-		TASK = Periodic_Task_Multiple_Activation;
+		TASK = TaskB;
 	};
 	AUTOSTART = FALSE;
 };
 
-TASK Periodic_Task_1_Activation {
+TASK TaskA {
 	PRIORITY = 1;
 	AUTOSTART = FALSE;
 	ACTIVATION = 1;
@@ -50,7 +50,7 @@ TASK Periodic_Task_1_Activation {
 	STACKSIZE = 512;
 };
 
-TASK Periodic_Task_Multiple_Activation {
+TASK TaskB {
 	PRIORITY = 1;
 	AUTOSTART = FALSE;
 	ACTIVATION = 2;
@@ -58,34 +58,29 @@ TASK Periodic_Task_Multiple_Activation {
 	STACKSIZE = 512;
 };
 
-TASK Triggered_Task_1_Activation {
+TASK TaskC_Trig {
 	PRIORITY = 1;
-	AUTOSTART = FALSE;
-	ACTIVATION = 1;
+	AUTOSTART = TRUE {
+		APPMODE = stdAppmode;
+	};	ACTIVATION = 1;
 	SCHEDULE = FULL;
 	STACKSIZE = 512;
 };
 
-TASK Triggered_Task_Multiple_Activation {
+TASK TaskD_Trig {
 	PRIORITY = 1;
-	AUTOSTART = FALSE;
-	ACTIVATION = 2;
+	AUTOSTART = TRUE {
+		APPMODE = stdAppmode;
+	};	ACTIVATION = 2;
 	SCHEDULE = FULL;
 	STACKSIZE = 512;
 };
 
-ISR Periodic_ISR{
-	CATEGORY = 2;
-	PRIORITY = 21;
-	STACKSIZE = 512;
-	SOURCE = DEFAULT;
-};
-
-ISR Triggered_ISR{
+ISR PIN_ISR{
 	CATEGORY = 2;
 	PRIORITY = 22;
 	STACKSIZE = 512;
-	SOURCE = DEFAULT;
+	SOURCE = PC1;
 };
 
 };
