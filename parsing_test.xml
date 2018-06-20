@@ -3053,13 +3053,13 @@ disp(&apos;Periodic Task&apos;);</P>
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">requiresResource</P>
               <P Name="Prompt" Class="char">Requires Resource</P>
-              <P Name="Value" Class="char">[0]</P>
+              <P Name="Value" Class="char">[1 0 0 2]</P>
             </Object>
             <Object ObjectID="74">
               <P Name="Type" Class="char">edit</P>
               <P Name="Name" Class="char">requiresEvent</P>
               <P Name="Prompt" Class="char">Requires Event</P>
-              <P Name="Value" Class="char">[0]</P>
+              <P Name="Value" Class="char">[1]</P>
             </Object>
           </Array>
           <Array PropName="DialogControls" Type="Simulink.dialog.Group" Dimension="1*2">

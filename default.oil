@@ -26,6 +26,18 @@ CPU test {
 
 APPMODE stdAppmode {DEFAULT = TRUE;};
 
+EVENT Event1 {
+	MASK = AUTO;
+};
+
+RESOURCE Resource1 {
+	RESOURCEPROPERTY = STANDARD;
+};
+
+RESOURCE Resource2 {
+	RESOURCEPROPERTY = STANDARD;
+};
+
 ALARM TaskAAlarm {
 	COUNTER = SystemCounter;
 	ACTION = ACTIVATETASK {
@@ -48,6 +60,9 @@ TASK TaskA {
 	ACTIVATION = 1;
 	SCHEDULE = FULL;
 	STACKSIZE = 512;
+	EVENT = EVENT1;
+	RESOURCE = Resource1;
+	RESOURCE = Resource2;
 };
 
 TASK TaskB {

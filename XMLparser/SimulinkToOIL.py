@@ -23,6 +23,7 @@ class SimulinkToOIL:
         isrs = []
         alarms = []
         resources = []
+        events = []
 
         # iterate over all blocks, find XML OIL objects, create OIL objects, add to lists above
         for block in blocks:
@@ -34,6 +35,8 @@ class SimulinkToOIL:
             auto_start = False
             priority = None
             schedule = None
+            event = None
+            requiredResources = []
             name = block.get('Name')
             obj = block.find('Object')
             if not(obj is None):
@@ -54,12 +57,31 @@ class SimulinkToOIL:
                                 schedule = 'FULL' if parameter[3].text == 'on' else 'NON'
                             elif parameter[1].text == 'generateAtStart' :
                                 auto_start = True if parameter[3].text == 'on' else False
+                            elif parameter[1].text == 'requiresEvent':
+                                event = True if '1' in parameter[3].text else False
+                            elif parameter[1].text == 'requiresResource':
+                                tempList = eval(parameter[3].text.replace(' ', ','))
+                                for i in tempList:
+                                    if i > 0:
+                                        requiredResources.append(Resource(name = "Resource"+str(i)))
                         # All parameters set, now we create the OILobject dependent on block_type
                         if not(block_type is None):
                             #in is Python's "contains"
+                            if not(event is None) and not events:
+                                event1 = Event()
+                                events.append(event1)
+                            if requiredResources:
+                                for requiredResource in requiredResources:
+                                        exists = False
+                                        for resource in resources:
+                                            # check if the resource already exists.
+                                            if requiredResource == resource:
+                                                exists = True
+                                        if not exists:
+                                            resources.append(requiredResource)
                             if 'Task' in block_type and 'tmpl' in block_type and not('Processor' in block_type or 'Queue' in block_type):
                                 task = Task(name=name, priority=priority, auto_start=auto_start,
-                                                       activation=activation, schedule=schedule)
+                                                       activation=activation, schedule=schedule, event=event if not(event is None) else False, resources = requiredResources)
                                 print(task.oil_representation())
                                 tasks.append(task)
                                 if 'Periodic' in block_type:
@@ -84,9 +106,13 @@ class SimulinkToOIL:
                                                 # This means sth is connected to the trigger port. The name of this block
                                                 # will be used as the trigger source
                                                 trigger = line[1].text
-                                    isr = ISR(name=name, priority=priority, source=trigger)
+                                    isr = ISR(name=name, priority=priority, source=trigger, resources = requiredResources)
                                     print(isr.oil_representation())
                                     isrs.append(isr)
+                            elif 'Alarm' in block_type and 'tmpl' in block_type:
+                                # Separate alarms are also possible. If connected to a task they should activate that task.
+                                # otherwise its an alarmcallback.
+                                pass
 
         #all isrs, tasks and accompanying alarms are read now, lets now create OS obj
         #small libraries added as test
@@ -102,6 +128,10 @@ class SimulinkToOIL:
                     "CPU test {\n")
         oil_file_body = os.oil_representation()
         oil_file_body += "APPMODE stdAppmode {DEFAULT = TRUE;};\n\n"
+        for event in events:
+            oil_file_body += event.oil_representation()
+        for resource in resources:
+            oil_file_body += resource.oil_representation()
         for alarm in alarms:
             oil_file_body += alarm.oil_representation()
         for task in tasks:
