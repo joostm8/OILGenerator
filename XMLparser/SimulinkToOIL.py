@@ -134,7 +134,10 @@ class SimulinkToOIL:
                                     if line[1].text == name:
                                         # this is the current task.
                                         # dest:
-                                        destBlk = line[3].text
+                                        destBlk = None
+                                        for i in line:
+                                            if i.get('Name') == 'DstBlock':
+                                                destBlk = i.text
                                         #now we need to search through all blocks to find this block
                                         # if the type is tmpl_triggered_task we do activate task
                                         # otherwise placeholder
@@ -224,6 +227,6 @@ class SimulinkToOIL:
             c_file += isr.c_representation()
         c_file += ("/*\nEOF\n*/")
 
-        final_file = open('defaultAppName.c', 'w')
+        final_file = open('default.c', 'w')
         final_file.write(c_file)
         final_file.close()
