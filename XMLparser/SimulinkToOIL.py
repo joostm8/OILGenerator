@@ -224,6 +224,6 @@ class SimulinkToOIL:
             c_file += isr.c_representation()
         c_file += ("/*\nEOF\n*/")
 
-        final_file = open('defaultAppName', 'w')
+        final_file = open('defaultAppName.c', 'w')
         final_file.write(c_file)
         final_file.close()
