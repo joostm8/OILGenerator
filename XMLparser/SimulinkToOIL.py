@@ -32,9 +32,12 @@ class SimulinkToOIL:
             period = None
             activation = 1
             auto_start = False
+            generate_at_start = None
             priority = None
             schedule = None
             event = None
+            alarm_time = None
+            cycle_time = None
             requiredResources = []
             name = block.get('Name')
             obj = block.find('Object')
@@ -54,8 +57,8 @@ class SimulinkToOIL:
                                 activation = parameter[3].text
                             elif parameter[1].text == 'preemptable' :
                                 schedule = 'FULL' if parameter[3].text == 'on' else 'NON'
-                            elif parameter[1].text == 'generateAtStart' :
-                                auto_start = True if parameter[3].text == 'on' else False
+                            elif parameter[1].text == 'generate_at_start' :
+                                generate_at_start = True if parameter[3].text == 'on' else False
                             elif parameter[1].text == 'requiresEvent':
                                 event = True if '1' in parameter[3].text else False
                             elif parameter[1].text == 'requiresResource':
@@ -63,6 +66,12 @@ class SimulinkToOIL:
                                 for i in tempList:
                                     if i > 0:
                                         requiredResources.append(Resource(name = "Resource"+str(i)))
+                            elif parameter[1].text == 'alarmTime':
+                                alarm_time = parameter[3].text
+                            elif parameter[1].text == 'cycleTime':
+                                cycle_time = parameter[3].text
+                            elif parameter[1].text == 'autoStart':
+                                auto_start = True if parameter[3].text == 'on' else False
                         # All parameters set, now we create the OILobject dependent on block_type
                         if not(block_type is None):
                             #in is Python's "contains"
@@ -79,21 +88,27 @@ class SimulinkToOIL:
                                         if not exists:
                                             resources.append(requiredResource)
                             if 'Task' in block_type and 'tmpl' in block_type and not('Processor' in block_type or 'Queue' in block_type):
-                                task = Task(name=name, priority=priority, auto_start=auto_start,
+                                task = Task(name=name, priority=priority, generate_at_start=generate_at_start,
                                                        activation=activation, schedule=schedule, event=event if not(event is None) else False, resources = requiredResources)
                                 print(task.oil_representation())
                                 tasks.append(task)
                                 if 'Periodic' in block_type:
                                     # In case of periodic task, automatically associate alarm
-                                    alarm = Alarm(name=name+"Alarm", action_link=name, auto_start=auto_start,
-                                                  alarm_time=period*1000, cycle_time=period*1000)
+                                    alarm = Alarm(name=name+"Alarm", action_link=name, auto_start=True,
+                                                  alarm_time=int(float(period)*1000), cycle_time=int(float(period)*1000))
                                     print(alarm.oil_representation())
                                     alarms.append(alarm)
 
                             elif 'ISR' in block_type and 'tmpl' in block_type and not('Queue' in block_type):
                                 if 'Periodic' in block_type:
-                                    # periodic ISR, requires different treatment, do later
-                                    pass
+                                    # periodic ISR, is a simplification which means the periodic
+                                    # interrupt source does not need to be connected
+                                    # contrary to triggered, we cannot deduce the name
+                                    # thus we opt for default.
+                                    trigger = "PERIODIC_TRIG_PLACEHOLDER"
+                                    isr = ISR(name=name, priority=priority, source=trigger, resources=requiredResources)
+                                    print(isr.oil_representation())
+                                    isrs.append(isr)
                                 elif 'Triggered' in block_type:
                                     #triggered ISR, thus we must find the trigger
                                     trigger = "DEFAULT"
@@ -111,7 +126,38 @@ class SimulinkToOIL:
                             elif 'Alarm' in block_type and 'tmpl' in block_type:
                                 # Separate alarms are also possible. If connected to a task they should activate that task.
                                 # otherwise its an alarmcallback.
-                                pass
+                                # for each line, search if we can find the current alarm.
+                                # if connected to task, action is activateTask
+                                # otherwise placeholder
+                                for line in lines:
+                                    # src_block
+                                    if line[1].text == name:
+                                        # this is the current task.
+                                        # dest:
+                                        destBlk = line[3].text
+                                        #now we need to search through all blocks to find this block
+                                        # if the type is tmpl_triggered_task we do activate task
+                                        # otherwise placeholder
+                                        for block2 in blocks:
+                                            if(block2.get('Name') == destBlk):
+                                                #found the block
+                                                obj2 = block2.find('Object')
+                                                if not(obj2 is None):
+                                                    if 'tmpl_Triggered_Task' in obj2[0].text:
+                                                        # is a triggered task
+                                                        alarm = Alarm(name=name, action_link=destBlk,
+                                                                      auto_start=auto_start,
+                                                                      alarm_time=alarm_time,
+                                                                      cycle_time=cycle_time)
+                                                        print(alarm.oil_representation())
+                                                        alarms.append(alarm)
+                                                else:
+                                                    alarm = Alarm(name=name, action="MANUAL_COMPLETE", action_link="MANUAL_COMPLETE",
+                                                                  auto_start=auto_start,
+                                                                  alarm_time=alarm_time,
+                                                                  cycle_time=cycle_time)
+                                                    print(alarm.oil_representation())
+                                                    alarms.append(alarm)
         self.generate_oil_file(tasks, isrs, resources, events, alarms)
         self.generate_c_template(tasks, isrs)
 
@@ -126,7 +172,7 @@ class SimulinkToOIL:
                     "* Generated on: " + str(datetime.datetime.now()) + "\n"+
                     "* just call goil a first time using the command line:\n"
                     "* goil --target=avr/arduino/mega --templates=../../../../goil/templates/ file_name_placeholder.oil\n"+
-                    "* /\n\n" +
+                    "*/\n\n" +
                     "OIL_VERSION = \"2.5\" : \"test\";\n\n" +
                     "CPU test {\n")
         oil_file_body = os.oil_representation()

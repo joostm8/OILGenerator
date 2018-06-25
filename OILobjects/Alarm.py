@@ -17,8 +17,8 @@ class Alarm:
 
         if self.auto_start:
             oil_repr += ("\tAUTOSTART = TRUE {\n" +
-                         "\tALARMTIME = " + str(self.alarm_time) + "\n" +
-                         "\tCYCLETIME = " + str(self.cycle_time) + "\n" +
+                         "\tALARMTIME = " + str(self.alarm_time) + ";\n" +
+                         "\tCYCLETIME = " + str(self.cycle_time) + ";\n" +
                          "\tAPPMODE = stdAppmode;\n\t};\n")
         else:
             oil_repr += "\tAUTOSTART = FALSE;\n"

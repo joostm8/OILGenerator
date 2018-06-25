@@ -10,9 +10,9 @@ class OS:
         oil_repr = ("\tOS OSConfig {\n" +
                     "\tSTATUS = STANDARD;\n" +
                     "\tBUILD = TRUE {\n" +
-                    "\tTRAMPOLINE_BASE_PATH = " + self.trampoline_path + ";\n" +
-                    "\tAPP_NAME = " + self.prog_filename + ";\n" +
-                    "\tAPP_SRC = " + self.app_source + ";\n" +
+                    '\tTRAMPOLINE_BASE_PATH = "' + self.trampoline_path + '";\n' +
+                    '\tAPP_NAME = "' + self.prog_filename + '";\n' +
+                    '\tAPP_SRC = "' + self.app_source + '";\n' +
                     "\tCPPCOMPILER = \"avr-g++\";\n" +
                     "\tCOMPILER =  \"avr-gcc\";\n" +
                     "\tLINKER = \"avr-gcc\";\n" +
