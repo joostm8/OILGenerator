@@ -75,7 +75,7 @@ class SimulinkToOIL:
                         # All parameters set, now we create the OILobject dependent on block_type
                         if not(block_type is None):
                             #in is Python's "contains"
-                            if not(event is None) and not events:
+                            if not(event is None) and event == True and not events:
                                 event1 = Event()
                                 events.append(event1)
                             if requiredResources:
